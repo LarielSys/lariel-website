@@ -55,7 +55,11 @@
     const chatInput    = document.getElementById('chatInput');
     const chatSend     = document.getElementById('chatSend');
 
-    const API_URL = '/api/chat';
+    // If served from GoDaddy (or any external host), route chat to the tunnel backend.
+    // When running locally via FastAPI, the relative path still works.
+    const CHAT_BACKEND = 'https://saves-upc-tennis-constitution.trycloudflare.com';
+    const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    const API_URL = isLocal ? '/api/chat' : CHAT_BACKEND + '/api/chat';
     let sessionId = null;
 
     function addBubble(text, role, id) {
