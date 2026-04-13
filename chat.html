@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chat — Lariel Systems</title>
+  <meta name="description" content="Chat with Lariel, our AI assistant. Ask about our services, AI capabilities, or just say hello.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="images/logo.png" type="image/png">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="container">
+      <a href="index.html" class="nav-logo"><img src="images/logo.png" alt="Lariel Systems"></a>
+      <ul class="nav-links">
+        <li><a href="services.html">Services</a></li>
+        <li><a href="process.html">Process</a></li>
+        <li><a href="chat.html">AI Chat</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="contact.html" class="btn">Get Quote</a></li>
+      </ul>
+      <div class="nav-toggle"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <!-- CHAT -->
+  <div class="container">
+    <div class="chat-wrapper">
+      <p class="chat-notice">Chat with Lariel — our AI assistant. Ask about services, capabilities, or get a feel for what AI can do.</p>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-bubble assistant">Hello — I'm Lariel, the AI assistant for Lariel Systems. Ask me anything about our services, how we work, or what AI can do for your business.</div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." autocomplete="off">
+        <button class="chat-send" id="chatSend">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-logo"><img src="images/logo.png" alt="Lariel Systems"></div>
+      <p>&copy; 2025 Lariel Systems. All rights reserved.</p>
+      <p class="footer-tagline">Intelligence. Integration. Innovation.</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Chat logic — placeholder until Ollama backend proxy is configured
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput    = document.getElementById('chatInput');
+    const chatSend     = document.getElementById('chatSend');
+
+    const API_URL = '/api/chat';
+    let sessionId = null;
+
+    function addBubble(text, role, id) {
+      const div = document.createElement('div');
+      div.className = `chat-bubble ${role}`;
+      if (id) div.id = id;
+      div.textContent = text;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return div;
+    }
+
+    async function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      addBubble(text, 'user');
+      chatInput.value = '';
+      chatInput.disabled = true;
+      chatSend.disabled = true;
+
+      // Create empty assistant bubble for streaming
+      const bubble = addBubble('', 'assistant', 'streaming');
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, session_id: sessionId })
+        });
+        if (!res.ok) throw new Error(`Server error: ${res.status}`);
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let fullText = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          // Parse SSE lines
+          for (const line of chunk.split('\n')) {
+            if (!line.startsWith('data: ')) continue;
+            try {
+              const data = JSON.parse(line.slice(6));
+              if (data.session_id) sessionId = data.session_id;
+              if (data.token) {
+                fullText += data.token;
+                bubble.textContent = fullText;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+              }
+            } catch (e) { /* skip malformed lines */ }
+          }
+        }
+
+        if (!fullText) bubble.textContent = 'No response received.';
+      } catch (err) {
+        bubble.textContent = 'Chat backend is not connected. Make sure the proxy is running on port 8083.';
+      } finally {
+        if (bubble.id === 'streaming') bubble.removeAttribute('id');
+        chatInput.disabled = false;
+        chatSend.disabled = false;
+        chatInput.focus();
+      }
+    }
+
+    chatSend.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') sendMessage();
+    });
+  </script>
+</body>
+</html>

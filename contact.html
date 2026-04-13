@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Lariel Systems</title>
+  <meta name="description" content="Get in touch with Lariel Systems. Tell us about your project and we'll map out an AI solution.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="images/logo.png" type="image/png">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="container">
+      <a href="index.html" class="nav-logo"><img src="images/logo.png" alt="Lariel Systems"></a>
+      <ul class="nav-links">
+        <li><a href="services.html">Services</a></li>
+        <li><a href="process.html">Process</a></li>
+        <li><a href="chat.html">AI Chat</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="contact.html" class="btn">Get Quote</a></li>
+      </ul>
+      <div class="nav-toggle"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <section class="hero" style="min-height: 40vh;">
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <p class="hero-label">Contact</p>
+      <h1>Let's <span>Talk</span></h1>
+      <p class="hero-sub">Tell us about your operation and what you're trying to solve. We'll get back to you within one business day.</p>
+    </div>
+  </section>
+
+  <!-- CONTACT FORM + INFO -->
+  <section class="section">
+    <div class="container">
+      <div class="contact-grid">
+        <!-- Form -->
+        <form id="contactForm" onsubmit="handleSubmit(event)">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required placeholder="Your name">
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required placeholder="you@company.com">
+          </div>
+          <div class="form-group">
+            <label for="company">Company</label>
+            <input type="text" id="company" name="company" placeholder="Company name (optional)">
+          </div>
+          <div class="form-group">
+            <label for="service">Interested In</label>
+            <select id="service" name="service">
+              <option value="">Select a service...</option>
+              <option value="ai-assistant">AI Assistant for My Business</option>
+              <option value="pdf-manual">PDF → Interactive AI Manual</option>
+              <option value="custom-dev">Custom AI Development</option>
+              <option value="vien-ai">Vi-En AI (Visual Inspection)</option>
+              <option value="not-sure">Not Sure — Need Guidance</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Tell Us About Your Project</label>
+            <textarea id="message" name="message" required placeholder="What problem are you trying to solve? What does your current workflow look like?"></textarea>
+          </div>
+          <button type="submit" class="btn btn-filled" style="width:100%;">Send Message</button>
+          <p id="formStatus" style="margin-top:16px; font-size:0.9rem; color:var(--cyan); display:none;"></p>
+        </form>
+
+        <!-- Info sidebar -->
+        <div class="contact-info">
+          <h3>Get in Touch</h3>
+          <p>We respond to every inquiry personally. No bots, no auto-responders — just a real conversation about what you need.</p>
+
+          <div class="contact-detail">
+            <span class="icon">✉</span>
+            <span>marco@larielsystems.com</span>
+          </div>
+          <div class="contact-detail">
+            <span class="icon">📞</span>
+            <span>US: 631-829-1129</span>
+          </div>
+          <div class="contact-detail">
+            <span class="icon">📞</span>
+            <span>Mexico: +52 56 3569 4445</span>
+          </div>
+          <div class="contact-detail">
+            <span class="icon">🌐</span>
+            <span>larielsystems.com</span>
+          </div>
+
+          <div style="margin-top:40px; padding:24px; background:var(--bg-card); border:1px solid var(--border); border-radius:4px;">
+            <h3 style="font-size:0.9rem; margin-bottom:12px;">What happens next?</h3>
+            <p style="font-size:0.9rem; color:var(--text-dim); margin-bottom:8px;">1. We review your message and do preliminary research.</p>
+            <p style="font-size:0.9rem; color:var(--text-dim); margin-bottom:8px;">2. We schedule a discovery call at your convenience.</p>
+            <p style="font-size:0.9rem; color:var(--text-dim); margin-bottom:0;">3. You receive a written proposal with scope and pricing.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-logo"><img src="images/logo.png" alt="Lariel Systems"></div>
+      <p>&copy; 2025 Lariel Systems. All rights reserved.</p>
+      <p class="footer-tagline">Intelligence. Integration. Innovation.</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    function handleSubmit(e) {
+      e.preventDefault();
+      const status = document.getElementById('formStatus');
+      // Placeholder — wire up to your backend/email service
+      status.textContent = 'Message sent! We\'ll be in touch shortly.';
+      status.style.display = 'block';
+      e.target.reset();
+      setTimeout(() => { status.style.display = 'none'; }, 5000);
+    }
+  </script>
+</body>
+</html>
